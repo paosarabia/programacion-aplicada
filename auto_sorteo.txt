@@ -1,0 +1,85 @@
+#Clase sorteo
+
+import random
+
+class Sorteo:
+    @staticmethod
+    def realizar_sorteo(clientes):
+        # Realizar el sorteo y devolver el cliente adjudicado
+        return random.choice(clientes)
+
+
+#La otra parte de adjudicacion
+
+class Cliente(Persona):
+    def __init__(self, dni, nombre, apellido, domicilio, nro_cliente):
+        super().__init__(dni, nombre, apellido, domicilio)
+        self.nro_cliente = nro_cliente
+        self.cuotas_pagadas = 0
+        self.cuotas_totales = 8  # Asumiendo que son 8 cuotas en total
+        self.vehiculo_asignado = None
+
+    def calcular_cuotas_totales(self, precio_vehiculo):
+        self.cuotas_totales = precio_vehiculo // 8
+        self.cuota_actual = self.cuotas_totales
+        
+    def cargar_vehiculo(self, vehiculo):  # Aca si quieren asignar esto a su metodo
+        vehiculo.matricula = f"{self.nro_cliente}-{len(self.vehiculos_asignados) + 1}"
+        vehiculo_asignado = {"id_vehiculo": vehiculo.matricula, "vehiculo": vehiculo}
+        self.vehiculos_asignados.append(vehiculo_asignado)
+        print(f"Vehículo asignado. ID: {vehiculo.matricula}")
+
+    def gestionar_adjudicacion(self, sorteo, oferta=None):
+        if self.cuotas_pagadas == self.cuotas_totales:
+            print("¡Felicidades! Usted ha completado el pago de todas las cuotas.")
+            self.adjudicar_vehiculo()
+        elif sorteo:
+            print("Realizando sorteo...")
+            cliente_adjudicado = sorteo.realizar_sorteo(clientes)
+            if cliente_adjudicado == self:
+                print("¡Felicidades! Usted ha sido adjudicado por sorteo.")
+                self.adjudicar_vehiculo()
+            else:
+                print("Lo sentimos, no fue seleccionado en el sorteo.")
+        elif oferta is not None and self.ofertar(oferta):
+            print("¡Felicidades! Su oferta fue la mejor. Usted ha sido adjudicado por licitación.")
+            self.adjudicar_vehiculo()
+        else:
+            print("Lo sentimos, no cumple con las condiciones para la adjudicación.")
+
+    def adjudicar_vehiculo(self):
+        if self.vehiculo_asignado is None:
+            print("Asignando vehículo...")
+            # Lógica para asignar el vehículo al cliente (puedes implementarla según tus necesidades)
+        if self.vehiculos_asignados:
+            print("Asignando vehículo...")
+            vehiculo_adjudicado = self.vehiculos_asignados[-1]["vehiculo"]
+            print(f"Vehículo asignado. ID: {vehiculo_adjudicado.matricula}")
+        else:
+            print("No hay vehículos asignados al cliente.")
+
+    def ofertar(self, oferta):
+if 0 <= oferta_cuotas <= self.cuotas_totales:
+            print(f"Oferta aceptada: {oferta_cuotas} cuotas.")
+            return True
+        else:
+            print(f"Oferta no válida. La oferta debe estar entre 0 y {self.cuotas_totales} cuotas.")
+            return False
+
+# Supongamos que tienes una lista de clientes y un objeto Sorteo
+clientes = [Cliente("11111111", "Juan", "Perez", "Calle A", 1), Cliente("22222222", "Ana", "Gomez", "Calle B", 2)]
+sorteo = Sorteo()
+
+# Cliente elige un vehículo
+cliente = Cliente("33333333", "Carlos", "Rodriguez", "Calle C", 3)
+vehiculo_elegido = Vehiculo(marca="", modelo="", color="", cantidad_puertas=0, ruedas=0, cant_pasajeros=0, precio=0)
+cliente.calcular_cuotas_totales(vehiculo_elegido.precio)
+
+print(f"Cuotas totales: {cliente.cuotas_totales}")
+print(f"Cuota actual: {cliente.cuota_actual}")
+
+# Cliente carga el vehículo
+cliente.cargar_vehiculo(vehiculo_elegido)
+
+# Cliente gestiona la adjudicación (puedes ajustar los parámetros según necesites)
+cliente.gestionar_adjudicacion(sorteo, oferta=4)
